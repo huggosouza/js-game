@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Game</title>
+</head>
+<body>
+    <h1>JS Game!</h1>
+    <canvas width="600" height="400"></canvas><br>
+    <button id="start_game" onclick="playGame()">Start</button><br>
+    <p id="score">Score: </p>
+
+<script>
+    var tela = document.querySelector('canvas');
+    var telaCtx = tela.getContext('2d');
+    var pincel = tela.getContext('2d');
+    var playing = false;
+    var player_score = 0;
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    function playGame() {
+        playing = true;
+        pincel.fillStyle = 'grey';
+        pincel.fillRect(0, 0, 600, 400);
+
+        function createTarget() {
+            // get target position
+            targetPos = [getRandomInt(600), getRandomInt(400)];
+            console.log("Target pos: " + targetPos);
+
+            // draw the target
+            pincel.fillStyle = 'red';
+            pincel.beginPath();
+            pincel.arc(targetPos[0], targetPos[1], 5, 0, 2 * 3.14);
+            pincel.fill();
+        }
+
+        createTarget();
+        
+        function play(event){
+            // get mouse pos
+            var mouse_pos_x = event.pageX - tela.offsetLeft;
+            var mouse_pos_y = event.pageY - tela.offsetTop;
+
+            // sets the score
+            var scoreStatus = document.getElementById("score").innerHTML = "Score: " + player_score;
+
+            if (mouse_pos_x < targetPos[0] + 5 && mouse_pos_x > targetPos[0] - 5) {
+                if (mouse_pos_y < targetPos[1] + 5 && mouse_pos_y > targetPos[1] - 5) {
+                    telaCtx.clearRect(0, 0, tela.width, tela.height);
+                    player_score += 10;
+                    playGame();
+                    scoreStatus = document.getElementById("score").innerHTML = "Score: " + player_score;
+                }
+            }
+
+            console.log("play triggered - score: " + player_score);
+            console.log("mouse pos x: " + mouse_pos_x);
+            console.log("mouse pos y: " + mouse_pos_y);
+            
+            }
+
+            tela.onclick = play;
+        
+    }
+</script>
+</body>
+</html>
